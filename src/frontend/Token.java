@@ -16,29 +16,24 @@ import frontend.*;
 public class Token
 {
 	
-	
-	
-	
 	/**
 	 * Holds all of the reserved words for scheme, as well
 	 * as some basic getter methods/set methods
 	 */
 	public enum TokenType 
 	{
-		// Special symbols.
-	    PLUS("+"), MINUS("-"), STAR("*"), SLASH("/"), COLON_EQUALS(":="),
-	    DOT("."), COMMA(","), SEMICOLON(";"), COLON(":"), QUOTE("'"),
-	    EQUALS("="), NOT_EQUALS("<>"), LESS_THAN("<"), LESS_EQUALS("<="),
-	    GREATER_EQUALS(">="), GREATER_THAN(">"), LEFT_PAREN("("), RIGHT_PAREN(")"),
-	    LEFT_BRACKET("["), RIGHT_BRACKET("]"), LEFT_BRACE("{"), RIGHT_BRACE("}"),
-	    UP_ARROW("^"), DOT_DOT("..");
-	    
-	    
-	    private static final int FIRST_SYMBOL_INDEX = PLUS.ordinal();  //Start of special symbols
-	    private static final int LAST_SYMBOL_INDEX  = DOT_DOT.ordinal(); //End of special symbols
+		// Reserved words.
+		AND, BEGIN, BEGIN0, BREAK("BREAK-VAR"), CASE, SPE_CASE("VARIABLE-CASE"), COND, CYCLE, DEFINE, DELAY, SPE_DELAY("DELAY-LIST-CONS"), DO,
+		ELSE, EXTEND("EXTEND-SYNTAX"), FOR, FREEZE, IF, LAMBDA, LET, LTEREC, SPE_LET("LET*"), MACRO, OBJECT("OBJECT-MAKER"), 
+		OR, QUOTE, RETREAT, SAFE("SAFE-LETREC"), SET("SET!"), STREAM("STREAM-CONS"), 
+		WHILE, WRAP;
+	
+	   
+	    private static final int FIRST_RESERVE_INDEX = AND.ordinal();  //Start of special symbols
+	    private static final int LAST_RESERVE_INDEX  = WRAP.ordinal(); //End of special RESERVEs
 	   
 	    private String text;  // token text
-	    public static HashSet<String> SPECIAL_SYMBOLS = new HashSet<String>(); //List containing special symbols
+	    public static HashSet<String> SPECIAL_RESERVES = new HashSet<String>(); //List containing special RESERVEs
 	    
 	    
 	    /**
@@ -46,6 +41,15 @@ public class Token
 	     * @param myName the text to be used as a symbol
 	     */
 	    TokenType(String myName)
+	    {
+	        this.text = myName;
+	    }
+	    
+	    /**
+	     * A constructor that makes a new token with it's text as it's symbol
+	     * @param myName the text to be used as a symbol
+	     */
+	    TokenType()
 	    {
 	        this.text = this.toString().toLowerCase();
 	    }
@@ -65,12 +69,11 @@ public class Token
 	    static 
 	    {
 	        TokenType values[] = TokenType.values();
-	        for (int i = FIRST_SYMBOL_INDEX; i <= LAST_SYMBOL_INDEX; ++i) 
+	        for (int i = FIRST_RESERVE_INDEX; i <= LAST_RESERVE_INDEX; ++i) 
 	        {
-	        	SPECIAL_SYMBOLS.add(values[i].GetText().toLowerCase());
+	        	SPECIAL_RESERVES.add(values[i].GetText().toLowerCase());
 	        }
 	    }
-	        	    
 	}
 	
 	
@@ -86,10 +89,9 @@ public class Token
 	     * @param source the source from where to fetch the token's characters.
 	     * @throws Exception if an error occurred.
 	     */
-	    public Token(Source source)
-	        throws Exception
+	    public Token(Source bSource) throws Exception
 	    {
-	        this.source = source;
+	        this.source = bSource;
 	        this.lineNum = source.getLineNum();
 	        this.position = source.getPosition();
 
@@ -148,12 +150,10 @@ public class Token
 	     * will be one beyond the last token character.
 	     * @throws Exception if an error occurred.
 	     */
-	    protected void extract()
-	        throws Exception
+	    protected void extract() throws Exception
 	    {
 	        text = Character.toString(currentChar());
 	        value = null;
-
 	        nextChar();  // consume current character
 	    }
 
@@ -162,8 +162,7 @@ public class Token
 	     * @return the current character from the source.
 	     * @throws Exception if an error occurred.
 	     */
-	    protected char currentChar()
-	        throws Exception
+	    protected char currentChar() throws Exception
 	    {
 	        return source.currentChar();
 	    }
@@ -173,8 +172,7 @@ public class Token
 	     * @return the next character from the source after moving forward.
 	     * @throws Exception if an error occurred.
 	     */
-	    protected char nextChar()
-	        throws Exception
+	    protected char nextChar() throws Exception
 	    {
 	        return source.nextChar();
 	    }
@@ -184,8 +182,7 @@ public class Token
 	     * @return the next character from the source without moving forward.
 	     * @throws Exception if an error occurred.
 	     */
-	    protected char peekChar()
-	        throws Exception
+	    protected char peekChar() throws Exception
 	    {
 	        return source.peekChar();
 	    }
